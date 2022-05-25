@@ -20,16 +20,11 @@ namespace ariel{
                         this->subs = subs;
                     }
                 }; 
-                // : name(name){
-                //     }
-                // };
-            //fields
             Node* root; //head of OrgChart
 
         public:
             class level_order_iterator{
                 private:
-                    //Node* pointer_to_curr;
                     queue <Node*> q;
                 public:
                     level_order_iterator(Node* ptr){
@@ -54,7 +49,6 @@ namespace ariel{
             };
             class reverse_order_iterator{
                     private:
-                        //Node* pointer_to_curr;
                         stack<Node*> reverse_stk;
                         queue<Node*> reverse_q;
                     public:
@@ -82,7 +76,6 @@ namespace ariel{
             };
             class preorder_order_iterator{
                     private:
-                        //Node* pointer_to_curr;
                         stack<Node*> stk;
                     public:
                         preorder_order_iterator(Node* ptr){
@@ -142,8 +135,8 @@ namespace ariel{
                 }
                 return *this;
             }
-            OrgChart add_root(string name);
-            OrgChart add_sub(string higher, string lower);
+            OrgChart& add_root(string name);
+            OrgChart& add_sub(string higher, string lower);
             level_order_iterator begin_level_order() const;
             level_order_iterator end_level_order() const;
             reverse_order_iterator begin_reverse_order();

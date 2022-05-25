@@ -94,19 +94,14 @@ namespace ariel{
             }
 
             OrgChart::preorder_order_iterator OrgChart::preorder_order_iterator::operator++(){
-                // cout << "++" << endl;
                 if(stk.empty()){
                     return *this;
                 }
                 Node* top = stk.top();
-                //Node* top = new Node(stk.top()->name, stk.top()->subs);
                 stk.pop(); //delete from stk
                 if(!(top->subs.empty())){ //sub exists
                     for(unsigned long i = top->subs.size() - 1; i >= 0 && i < top->subs.size(); i--){
-                        // cout << i << endl;
-                        // cout << "before push: " << top->subs.at(i)->name << endl;
                         stk.push(top->subs.at(i));
-                        // cout << "after push top: " << stk.top()->name << endl;
                     }
                 }
                 return *this;
@@ -146,7 +141,7 @@ namespace ariel{
             }
 
 
-            OrgChart OrgChart::add_root(string name){
+            OrgChart& OrgChart::add_root(string name){
                 if(this->root == nullptr){
                     this->root = new Node(name);
                     return *this;
@@ -154,7 +149,7 @@ namespace ariel{
                 this->root->name = name;
                 return *this;
             }
-            OrgChart OrgChart::add_sub(string higher, string lower){
+            OrgChart& OrgChart::add_sub(string higher, string lower){
                 if(this->root == nullptr){
                     throw invalid_argument("can't add sub before adding root");
                 }
@@ -168,8 +163,7 @@ namespace ariel{
                 if(it == end_level_order()){
                     throw invalid_argument("higher person does not exist");
                 }
-                Node* sub =  new Node(lower);
-                it.get_top()->subs.push_back(sub); //add lower to the vector subs or higher
+                it.get_top()->subs.push_back(new Node(lower)); //add lower to the vector subs or higher
                 return *this; //return chart once updates have finished
             }
 
