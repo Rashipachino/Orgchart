@@ -117,10 +117,11 @@ namespace ariel{
                 if(stk.empty()){
                     return tmp;
                 }
-                for(unsigned long i = this->stk.top()->subs.size() - 1; i >= 0; i--){
-                    stk.push(this->stk.top()->subs[i]);
+                 Node* top = stk.top();
+                 stk.pop(); //delete from stk
+                for(unsigned long i = top->subs.size() - 1; i >= 0 && i < top->subs.size(); i--){
+                    stk.push(top->subs[i]);
                 }
-                stk.pop(); //delete from stk
                 return tmp;
             }
             bool OrgChart::preorder_order_iterator::operator==(const preorder_order_iterator& rhs) const{
@@ -134,16 +135,7 @@ namespace ariel{
             }
 
             bool OrgChart::preorder_order_iterator::operator!=(const preorder_order_iterator& rhs) const{
-                // cout << "!=" << endl;
                 return !(*this == rhs);
-            //    if(!this->stk.empty() && rhs.stk.empty()){
-            //        cout << "inside if" << endl;
-            //         return true;
-            //     }
-            //     if(this->stk.empty() && rhs.stk.empty()){
-            //         return false;
-            //     }
-            //     return this->stk.top() != rhs.stk.top(); 
             }
             OrgChart::preorder_order_iterator& OrgChart::preorder_order_iterator::operator=(const preorder_order_iterator& other){
                 if(this==&other){
@@ -155,14 +147,17 @@ namespace ariel{
 
 
             OrgChart OrgChart::add_root(string name){
-                if(this->root != nullptr){
-                    throw invalid_argument("root already exists in this chart");
+                if(this->root == nullptr){
+                    this->root = new Node(name);
+                    return *this;
                 }
-                Node* new_root = new Node(name); //node with name and no subs yet
-                this->root = new_root;
+                this->root->name = name;
                 return *this;
             }
             OrgChart OrgChart::add_sub(string higher, string lower){
+                if(this->root == nullptr){
+                    throw invalid_argument("can't add sub before adding root");
+                }
                 level_order_iterator it = begin_level_order();
                 while(it != end_level_order()){
                     if(*it == higher){
@@ -179,22 +174,40 @@ namespace ariel{
             }
 
             OrgChart::level_order_iterator OrgChart::begin_level_order() const{
+                if(this->root == nullptr){
+                    throw invalid_argument("chart is empty");
+                }
                 return level_order_iterator(this->root);
             }
             OrgChart::level_order_iterator OrgChart::end_level_order() const{
+                if(this->root == nullptr){
+                    throw invalid_argument("chart is empty");
+                }
                 return level_order_iterator(nullptr);
             }
             
             OrgChart::reverse_order_iterator OrgChart::begin_reverse_order(){
+                if(this->root == nullptr){
+                    throw invalid_argument("chart is empty");
+                }
                 return reverse_order_iterator(this->root);
             }
             OrgChart::reverse_order_iterator OrgChart::reverse_order(){
+                if(this->root == nullptr){
+                    throw invalid_argument("chart is empty");
+                }
                 return reverse_order_iterator(nullptr);
             }
             OrgChart::preorder_order_iterator OrgChart::begin_preorder(){
+                if(this->root == nullptr){
+                    throw invalid_argument("chart is empty");
+                }
                 return preorder_order_iterator(this->root);
             }
             OrgChart::preorder_order_iterator OrgChart::end_preorder(){
+                if(this->root == nullptr){
+                    throw invalid_argument("chart is empty");
+                }
                 return preorder_order_iterator(nullptr);
             }
             std::ostream& operator<< (std::ostream& output, const OrgChart& o){
